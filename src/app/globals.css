@@ -1,13 +1,35 @@
 :root {
+  /* Primary colors */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #19293a;
+
+  /* Color palette */
+  --dark-blue: #19293a;
+  --dark-blue-light: #19293a1a;
+  --medium-dark-blue: #344657;
+  --very-dark-blue: #112d40;
+  --light-gray: #edeff1;
+  --light-gray-alt: #e2e4e6;
+  --medium-gray: #c5c9cd;
+  --medium-gray-alt: #c5cace;
+  --medium-blue-gray: #506473;
+  --medium-blue-gray-alpha: #50647380;
+  --medium-dark-blue-gray: #596d7a;
+  --medium-light-blue-gray: #9ea9b1;
+  --light-blue-gray: #a7b1b8;
+  --dark-blue-alpha: #19293a80;
+  --dark-pink: #c0345e;
+  --pink: #c34465;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+
+@font-face {
+  font-family: "ITC Avant Garde Gothic Pro";
+  font-weight: bold;
+  src: url("/fonts/ITCAvantGardeGothicPro-Bold.woff2") format("woff2"),
+    url("/fonts/ITCAvantGardeGothicPro-Bold.woff") format("woff");
+  font-display: swap;
 }
 
 html,
@@ -19,7 +41,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Open Sans", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -35,8 +57,13 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.heading,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "ITC Avant Garde Gothic Pro", sans-serif;
+  font-weight: bold;
 }
