@@ -109,7 +109,7 @@ const Tab = styled.button<{ $active: boolean }>`
     height: 2px; /* Slightly thinner for hover state */
     background-color: var(--pink);
     opacity: 0.5;
-    transform: scaleX(0.7); /* Don't extend fully on hover */
+    transform: scaleX(0.7);
     transform-origin: center;
     transition: transform 0.2s ease, opacity 0.2s ease;
     z-index: 1;
