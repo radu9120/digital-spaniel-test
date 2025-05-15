@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { NavLink } from "@/components/topography";
 import { PageWidth } from "@/components/page-width";
 import Link from "next/link";
+import { useScrollListener } from "@/hooks/use-scroll-listener";
 
 // Style for the header container with white background when scrolled
 const HeaderContainer = styled.header<{ $visible: boolean; $atTop: boolean }>`
@@ -147,37 +148,8 @@ const MobileNavItem = styled(NavLink)`
 `;
 
 export const Header = () => {
-  const [visible, setVisible] = useState(true);
-  const [atTop, setAtTop] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const { visible, atTop } = useScrollListener();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      // Determine if at the top of the page
-      if (currentScrollY < 10) {
-        setAtTop(true);
-      } else {
-        setAtTop(false);
-      }
-
-      // Determine scroll direction
-      if (currentScrollY > lastScrollY) {
-        // Scrolling down
-        setVisible(false);
-      } else {
-        // Scrolling up
-        setVisible(true);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);

@@ -10,7 +10,6 @@ import {
 } from "@/components/topography";
 import React from "react";
 import styled from "styled-components";
-import Image from "next/image";
 
 const HeroSection = styled.section`
   position: relative;
