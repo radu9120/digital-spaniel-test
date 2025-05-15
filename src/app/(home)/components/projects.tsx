@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { PageWidth } from "@/components/page-width";
 import {
@@ -35,31 +35,39 @@ const StyledBusinessHeadline = styled(BusinessHeadline)`
   margin-bottom: 40px;
 `;
 
-// Tab Navigation
+// Tab Navigation - Improved for mobile scrolling
 const TabNavigation = styled.div`
-  display: inline-flex; // Change to inline-flex to contain width to content
+  display: inline-block; // Changed to inline-block so it doesn't take full width
   position: relative;
   margin-bottom: 40px;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%; // This only applies to the width of the tabs, not full page
-    height: 1px;
-    background-color: #e5e5e5;
-  }
+  -webkit-overflow-scrolling: touch;
+  width: auto; // Auto width based on content
+  padding-bottom: 2px;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
   @media (max-width: 480px) {
-    gap: 10px;
+    width: 100%; // Take full width on very small screens for better scrolling
+  }
+`;
+const TabsContainer = styled.div`
+  display: flex;
+  min-width: min-content;
+  position: relative; // Added position relative for the line
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; // This will now be 100% of the tabs container width, not the page width
+    height: 1px;
+    background-color: #e5e5e5;
   }
 `;
 
@@ -75,6 +83,7 @@ const Tab = styled.button<{ $active: boolean }>`
   position: relative;
   white-space: nowrap;
   margin-right: 8px;
+  transition: color 0.3s ease;
 
   &::after {
     content: "";
@@ -85,18 +94,39 @@ const Tab = styled.button<{ $active: boolean }>`
     height: 3px;
     background-color: var(--pink);
     transform: scaleX(${(props) => (props.$active ? 1 : 0)});
-    transform-origin: 0 50%;
-    transition: transform 0.3s ease;
-    z-index: 2; // Ensures it's above the grey line
+    transform-origin: center; /* Changed to center for more balanced animation */
+    transition: transform 0.3s ease-out; /* Smoother, more professional transition */
+    z-index: 2;
+  }
+
+  /* Separate hover indicator with different styling */
+  &:not($active):hover::before {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px; /* Slightly thinner for hover state */
+    background-color: var(--pink);
+    opacity: 0.5;
+    transform: scaleX(0.7); /* Don't extend fully on hover */
+    transform-origin: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    z-index: 1;
   }
 
   &:hover {
     color: var(--dark-blue);
   }
 
-  &:hover::after {
-    transform: scaleX(1);
-    opacity: ${(props) => (props.$active ? 1 : 0.7)};
+  &:hover::before {
+    transform: scaleX(0.8);
+    opacity: 0.7;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 `;
 // Project Grid
@@ -241,6 +271,8 @@ const NavButton = styled.button<{ $active: boolean }>`
 
 export const Projects = () => {
   const [activeTab, setActiveTab] = useState("All");
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
 
   // Ensure we have an array, even if the import fails
   const projects = Array.isArray(projectsData) ? projectsData : [];
@@ -277,6 +309,28 @@ export const Projects = () => {
   const canGoPrev = currentTabIndex > 0;
   const canGoNext = currentTabIndex < categories.length - 1;
 
+  // Effect to scroll active tab into view
+  useEffect(() => {
+    if (activeTabRef.current && tabsRef.current) {
+      // Calculate the scroll position to center the active tab
+      const tabElement = activeTabRef.current;
+      const containerElement = tabsRef.current;
+
+      const tabRect = tabElement.getBoundingClientRect();
+      const containerRect = containerElement.getBoundingClientRect();
+
+      // Calculate the scroll position to center the tab
+      const scrollPosition =
+        tabElement.offsetLeft - containerRect.width / 2 + tabRect.width / 2;
+
+      // Scroll with smooth behavior
+      containerElement.scrollTo({
+        left: Math.max(0, scrollPosition),
+        behavior: "smooth",
+      });
+    }
+  }, [activeTab]);
+
   return (
     <ProjectsSection>
       <PageWidth>
@@ -289,16 +343,19 @@ export const Projects = () => {
           </StyledBusinessHeadline>
         </HeaderContainer>
 
-        <TabNavigation>
-          {categories.map((category) => (
-            <Tab
-              key={category}
-              $active={activeTab === category}
-              onClick={() => setActiveTab(category)}
-            >
-              {category}
-            </Tab>
-          ))}
+        <TabNavigation ref={tabsRef}>
+          <TabsContainer>
+            {categories.map((category) => (
+              <Tab
+                key={category}
+                $active={activeTab === category}
+                onClick={() => setActiveTab(category)}
+                ref={activeTab === category ? activeTabRef : null}
+              >
+                {category}
+              </Tab>
+            ))}
+          </TabsContainer>
         </TabNavigation>
 
         <ProjectGrid>
