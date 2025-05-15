@@ -13,47 +13,6 @@ Language: TypeScript
 Animation: CSS transitions
 Deployment: Vercel
 
-digital-spaniel/
-├── public/ # Static assets
-│ ├── about/ # About section images
-│ │ └── office01-04.png
-│ ├── case-studies/ # Case study images
-│ │ └── dashboard01.png
-│ ├── projects/ # Project images
-│ │ ├── boots.png
-│ │ ├── makerek.png
-│ │ └── ...
-│ ├── hero.png # Hero section background
-│ └── logo.png # Company logo
-├── src/
-│ ├── app/
-│ │ ├── (home)/
-│ │ │ ├── components/ # Home page components
-│ │ │ │ ├── about.tsx
-│ │ │ │ ├── case-studies.tsx
-│ │ │ │ ├── footer.tsx
-│ │ │ │ ├── header.tsx
-│ │ │ │ ├── hero.tsx
-│ │ │ │ ├── projects.tsx
-│ │ │ │ ├── services.tsx
-│ │ │ │ └── testimonials.tsx
-│ │ │ ├── page.tsx # Home page
-│ │ │ └── layout.tsx
-│ │ └── layout.tsx # Root layout
-│ ├── components/ # Shared components
-│ │ ├── page-width.tsx
-│ │ └── topography/
-│ │ └── index.tsx
-│ ├── contexts/ # React contexts
-│ ├── hooks/ # Custom React hooks
-│ └── lib/
-│ └── data.ts # Mock data for projects/case studies
-├── .gitignore
-├── next-env.d.ts
-├── next.config.ts
-├── package.json
-└── README.md
-
 Key Features & Components
 
 1. Hero Section
