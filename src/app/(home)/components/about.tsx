@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { PageWidth } from "@/components/page-width";
 import {
@@ -11,13 +11,27 @@ import Image from "next/image";
 import Link from "next/link";
 
 const AboutSection = styled.section`
-  padding: 100px 0;
   background-color: #f9fafb;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background-color: white;
+    z-index: 0;
+  }
 `;
 
 const AboutLayout = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1;
+  padding: 100px 0 50px;
 `;
 
 const HeaderContainer = styled.div`
@@ -29,47 +43,88 @@ const StyledBusinessHeadline = styled(BusinessHeadline)`
   margin-bottom: 40px;
 `;
 
-// Image Gallery Layout
+// Revised image gallery with smaller sizes
 const ImageGallery = styled.div`
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  grid-template-rows: auto auto;
-  grid-gap: 20px;
-  margin-bottom: 50px;
+  grid-template-columns: 500px 1fr;
+  grid-gap: 16px;
+  max-width: 95%;
+  margin: 0 auto;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+  }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    grid-gap: 10px;
   }
 `;
 
 const MainImage = styled.div`
+  height: 380px;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: 280px;
+  }
+`;
+
+const RightColumn = styled.div`
+  display: grid;
+  grid-template-columns: 360px 230px;
+  grid-template-rows: 190px 1fr;
+  grid-gap: 12px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 190px 190px;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 170px);
+  }
+`;
+
+const TopHorizontalImage = styled.div`
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+`;
+
+const RightVerticalImage = styled.div`
+  grid-column: 2;
   grid-row: 1 / span 2;
-  height: 500px;
+  height: 330px;
   position: relative;
   overflow: hidden;
 
+  @media (max-width: 1200px) {
+    grid-row: 1;
+    height: 190px;
+  }
+
   @media (max-width: 768px) {
-    height: 300px;
+    height: 170px;
   }
 `;
 
-const TopRightImage = styled.div`
-  height: 240px;
+const BottomSquareImage = styled.div`
+  grid-column: 1;
+  grid-row: 2;
+  height: 250px;
   position: relative;
   overflow: hidden;
 
-  @media (max-width: 768px) {
-    height: 200px;
+  @media (max-width: 1200px) {
+    height: 190px;
   }
-`;
-
-const BottomRightImage = styled.div`
-  height: 240px;
-  position: relative;
-  overflow: hidden;
 
   @media (max-width: 768px) {
-    height: 200px;
+    height: 170px;
   }
 `;
 
@@ -77,35 +132,41 @@ const StyledImage = styled(Image)`
   object-fit: cover;
 `;
 
-// Tabs Navigation
-const TabsContainer = styled.div`
+// Links container
+const LinksContainer = styled.div`
   display: flex;
-  border-bottom: 1px solid #e2e8f0;
+  gap: 80px;
   margin-top: 20px;
+  padding-top: 20px;
+  padding-left: 2.5%;
 `;
 
-const Tab = styled.button<{ $active: boolean }>`
-  background: none;
-  border: none;
-  font-family: "Open Sans", sans-serif;
+const StyledLink = styled(Link)`
+  font-family: "Open Sans", Arial, Helvetica, sans-serif;
   font-size: 1.125rem;
-  color: ${(props) =>
-    props.$active ? "var(--dark-blue)" : "var(--medium-blue-gray)"};
-  padding: 12px 24px;
-  cursor: pointer;
+  font-weight: 500;
+  color: var(--dark-blue);
+  text-decoration: none;
+  display: inline-block;
   position: relative;
-  border-bottom: ${(props) =>
-    props.$active ? "2px solid var(--dark-blue)" : "none"};
-  margin-bottom: -1px;
+  padding-bottom: 8px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--pink);
+  }
 
   &:hover {
-    color: var(--dark-blue);
+    opacity: 0.8;
   }
 `;
 
 export const About = () => {
-  const [activeTab, setActiveTab] = useState("About");
-
   return (
     <AboutSection>
       <PageWidth>
@@ -120,69 +181,55 @@ export const About = () => {
           </HeaderContainer>
 
           <ImageGallery>
+            {/* Left column - large horizontal image */}
             <MainImage>
               <StyledImage
-                src="/about/team-meeting.jpg"
+                src="/about/office01.png"
                 alt="Team meeting around a wooden table"
                 fill
                 priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 500px"
               />
             </MainImage>
 
-            <TopRightImage>
-              <StyledImage
-                src="/about/collaboration.jpg"
-                alt="Team members collaborating on a project"
-                fill
-              />
-            </TopRightImage>
+            {/* Right column with 3 images */}
+            <RightColumn>
+              {/* Top horizontal image */}
+              <TopHorizontalImage>
+                <StyledImage
+                  src="/about/office03.png"
+                  alt="Office with 'Punch today in the face' neon sign"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 360px"
+                />
+              </TopHorizontalImage>
 
-            <BottomRightImage>
-              <StyledImage
-                src="/about/office-motivation.jpg"
-                alt="Office with 'Punch today in the face' neon sign"
-                fill
-              />
-            </BottomRightImage>
+              {/* Right vertical image */}
+              <RightVerticalImage>
+                <StyledImage
+                  src="/about/office02.png"
+                  alt="Team members collaborating on a project"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 230px"
+                />
+              </RightVerticalImage>
+
+              {/* Bottom square image */}
+              <BottomSquareImage>
+                <StyledImage
+                  src="/about/office04.png"
+                  alt="Office hallway with glass partitions"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 250px"
+                />
+              </BottomSquareImage>
+            </RightColumn>
           </ImageGallery>
 
-          <TabsContainer>
-            <Tab
-              $active={activeTab === "About"}
-              onClick={() => setActiveTab("About")}
-            >
-              About
-            </Tab>
-            <Tab
-              $active={activeTab === "Careers"}
-              onClick={() => setActiveTab("Careers")}
-            >
-              Careers
-            </Tab>
-          </TabsContainer>
-
-          {/* Tab content would go here - showing placeholder for now */}
-          {activeTab === "About" && (
-            <div style={{ padding: "30px 0" }}>
-              <p>
-                Digital Spaniel is a creative design agency focused on helping
-                brands stand out in the digital landscape. Our team of
-                passionate designers, developers, and marketers work together to
-                create compelling brand experiences that connect with audiences
-                and drive business growth.
-              </p>
-            </div>
-          )}
-
-          {activeTab === "Careers" && (
-            <div style={{ padding: "30px 0" }}>
-              <p>
-                Join our team of creative thinkers and digital innovators. We're
-                always looking for talented individuals who are passionate about
-                design, technology, and building amazing digital experiences.
-              </p>
-            </div>
-          )}
+          <LinksContainer>
+            <StyledLink href="/about">About</StyledLink>
+            <StyledLink href="/careers">Careers</StyledLink>
+          </LinksContainer>
         </AboutLayout>
       </PageWidth>
     </AboutSection>

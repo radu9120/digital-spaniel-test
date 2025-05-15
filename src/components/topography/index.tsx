@@ -65,6 +65,7 @@ export const CallToAction = styled.a`
   text-decoration: none;
   display: inline-block;
   position: relative;
+  transition: color 0.3s ease;
 
   &::after {
     content: "";
@@ -74,10 +75,18 @@ export const CallToAction = styled.a`
     width: 100%;
     height: 2px;
     background-color: var(--pink);
+    transform: scaleX(0.7);
+    transform-origin: left center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
   }
 
   &:hover {
-    opacity: 0.8;
+    color: var(--pink);
+
+    &::after {
+      transform: scaleX(1);
+      background-color: var(--pink);
+    }
   }
 `;
 

@@ -135,7 +135,6 @@ export const Testimonials = () => {
   const [activeSlide, setActiveSlide] = useState(0);
 
   const testimonials = [
-    // First set of testimonials
     [
       {
         id: 1,
@@ -162,7 +161,7 @@ export const Testimonials = () => {
         image: "/testimonials/mary.jpg",
       },
     ],
-    // Second set of testimonials (you can add more sets)
+
     [
       {
         id: 4,
@@ -189,7 +188,6 @@ export const Testimonials = () => {
         image: "/testimonials/michael.jpg",
       },
     ],
-    // Add more sets as needed
   ];
 
   // Handle dot click to change the active slide
@@ -214,10 +212,7 @@ export const Testimonials = () => {
 
         <TestimonialSlider>
           {currentTestimonials.map((testimonial, index) => (
-            <TestimonialCard
-              key={testimonial.id}
-              $featured={index === 1} // Middle card is featured
-            >
+            <TestimonialCard key={testimonial.id} $featured={index === 1}>
               <QuoteMarks $featured={index === 1}>❝</QuoteMarks>
               <TestimonialContent>{testimonial.content}</TestimonialContent>
               <AuthorSection>

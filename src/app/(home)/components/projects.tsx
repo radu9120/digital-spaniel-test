@@ -7,9 +7,20 @@ import {
   BusinessHeadlinePrimary,
   BusinessHeadlineSecondary,
   CallToAction,
-  Paragraph,
 } from "@/components/topography";
 import Image from "next/image";
+// Import the data directly from lib
+import { projectsData } from "@/lib/data";
+
+// Type definition for project data
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  wide: boolean;
+}
 
 const ProjectsSection = styled.section`
   padding: 80px 0;
@@ -26,9 +37,30 @@ const StyledBusinessHeadline = styled(BusinessHeadline)`
 
 // Tab Navigation
 const TabNavigation = styled.div`
-  display: flex;
-  border-bottom: 1px solid #e5e5e5;
+  display: inline-flex; // Change to inline-flex to contain width to content
+  position: relative;
   margin-bottom: 40px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; // This only applies to the width of the tabs, not full page
+    height: 1px;
+    background-color: #e5e5e5;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+  }
 `;
 
 const Tab = styled.button<{ $active: boolean }>`
@@ -38,9 +70,11 @@ const Tab = styled.button<{ $active: boolean }>`
   font-size: 1.125rem;
   color: ${(props) =>
     props.$active ? "var(--pink)" : "var(--medium-blue-gray)"};
-  padding: 12px 24px;
+  padding: 12px 32px;
   cursor: pointer;
   position: relative;
+  white-space: nowrap;
+  margin-right: 8px;
 
   &::after {
     content: "";
@@ -48,16 +82,23 @@ const Tab = styled.button<{ $active: boolean }>`
     bottom: -1px;
     left: 0;
     width: 100%;
-    height: 2px;
+    height: 3px;
     background-color: var(--pink);
-    opacity: ${(props) => (props.$active ? 1 : 0)};
+    transform: scaleX(${(props) => (props.$active ? 1 : 0)});
+    transform-origin: 0 50%;
+    transition: transform 0.3s ease;
+    z-index: 2; // Ensures it's above the grey line
   }
 
   &:hover {
     color: var(--dark-blue);
   }
-`;
 
+  &:hover::after {
+    transform: scaleX(1);
+    opacity: ${(props) => (props.$active ? 1 : 0.7)};
+  }
+`;
 // Project Grid
 const ProjectGrid = styled.div`
   display: grid;
@@ -77,10 +118,10 @@ const ProjectGrid = styled.div`
 // Top Row Cards - All the same size
 const ProjectCard = styled.div`
   position: relative;
-
   overflow: hidden;
   height: 280px;
   background-color: var(--dark-blue);
+  border-radius: 4px;
 
   &:hover .overlay {
     opacity: 1;
@@ -100,6 +141,7 @@ const ProjectImage = styled(Image)`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 4px;
 `;
 
 const ProjectOverlay = styled.div`
@@ -108,14 +150,22 @@ const ProjectOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(30, 41, 59, 0.85);
+  background: linear-gradient(
+    to top,
+    rgba(30, 41, 59, 0.95) 30%,
+    rgba(30, 41, 59, 0.5) 70%,
+    rgba(30, 41, 59, 0)
+  );
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 20px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 20px 40px;
   opacity: 0;
   transition: opacity 0.3s ease;
   color: white;
+  border-radius: 4px;
+  text-align: center;
 `;
 
 const ProjectTitle = styled.h3`
@@ -124,6 +174,8 @@ const ProjectTitle = styled.h3`
   font-size: 1.75rem;
   margin-bottom: 12px;
   color: white;
+  text-align: center;
+  width: 100%;
 `;
 
 const ProjectDescription = styled.p`
@@ -132,6 +184,8 @@ const ProjectDescription = styled.p`
   line-height: 1.5;
   margin-bottom: 20px;
   color: white;
+  text-align: center;
+  max-width: 90%;
 `;
 
 const ProjectLink = styled.a`
@@ -140,8 +194,10 @@ const ProjectLink = styled.a`
   color: white;
   text-decoration: none;
   border-bottom: 1px solid white;
-  align-self: flex-start;
   padding-bottom: 2px;
+  transition: opacity 0.2s ease;
+  text-align: center;
+  display: inline-block;
 
   &:hover {
     opacity: 0.85;
@@ -156,80 +212,70 @@ const NavigationControls = styled.div`
   margin-top: 40px;
 `;
 
-const NavButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
-
 const ArrowControls = styled.div`
   display: flex;
   gap: 10px;
 `;
 
+// Updated NavButton to match case studies
+const NavButton = styled.button<{ $active: boolean }>`
+  background-color: ${(props) =>
+    props.$active ? "#1E293B" : "var(--medium-blue-gray)"};
+  color: white;
+  width: 50px;
+  height: 50px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: ${(props) => (props.$active ? "pointer" : "default")};
+  transition: all 0.3s ease;
+  opacity: ${(props) => (props.$active ? 1 : 0.7)};
+
+  &:hover {
+    background-color: ${(props) =>
+      props.$active ? "var(--dark-blue)" : "var(--medium-blue-gray)"};
+  }
+`;
+
 export const Projects = () => {
   const [activeTab, setActiveTab] = useState("All");
 
-  const projects = [
-    {
-      id: 1,
-      title: "Colorful Boots",
-      description: "Vibrant brand identity for a bold fashion company.",
-      image: "/projects/boots.png",
-      category: "Branding",
-      wide: false,
-    },
-    {
-      id: 2,
-      title: "Make Ideas Happen",
-      description:
-        "A local paper with big ideas needed a sharp new brand to inspire readers.",
-      image: "/projects/newspaper02.png",
-      category: "Branding",
-      wide: false,
-    },
-    {
-      id: 3,
-      title: "Tinned Fish Packaging",
-      description: "Creative packaging design for premium seafood products.",
-      image: "/projects/makerek.png",
-      category: "Web Design",
-      wide: false,
-    },
-    {
-      id: 4,
-      title: "Dinamo Magazine",
-      description: "Bold publishing design for a youth culture magazine.",
-      image: "/projects/newspaper.png",
-      category: "Digital Marketing",
-      wide: true,
-    },
-    {
-      id: 5,
-      title: "3D Character Design",
-      description: "Playful characters for an animated short film.",
-      image: "/projects/rider01.png",
-      category: "Web Design",
-      wide: false,
-    },
-  ];
+  // Ensure we have an array, even if the import fails
+  const projects = Array.isArray(projectsData) ? projectsData : [];
 
+  // Get unique categories
+  const allCategories = [
+    ...new Set(projects.map((project) => project.category)),
+  ];
+  const categories = ["All", ...allCategories];
+
+  // Find the current tab index in the categories array
+  const currentTabIndex = categories.indexOf(activeTab);
+
+  // Filter projects by active tab
   const filteredProjects =
     activeTab === "All"
       ? projects
       : projects.filter((project) => project.category === activeTab);
+
+  // Handle navigation between tabs
+  const handlePrevTab = () => {
+    if (currentTabIndex > 0) {
+      setActiveTab(categories[currentTabIndex - 1]);
+    }
+  };
+
+  const handleNextTab = () => {
+    if (currentTabIndex < categories.length - 1) {
+      setActiveTab(categories[currentTabIndex + 1]);
+    }
+  };
+
+  // Check if navigation is active
+  const canGoPrev = currentTabIndex > 0;
+  const canGoNext = currentTabIndex < categories.length - 1;
 
   return (
     <ProjectsSection>
@@ -244,30 +290,15 @@ export const Projects = () => {
         </HeaderContainer>
 
         <TabNavigation>
-          <Tab
-            $active={activeTab === "All"}
-            onClick={() => setActiveTab("All")}
-          >
-            All
-          </Tab>
-          <Tab
-            $active={activeTab === "Branding"}
-            onClick={() => setActiveTab("Branding")}
-          >
-            Branding
-          </Tab>
-          <Tab
-            $active={activeTab === "Web Design"}
-            onClick={() => setActiveTab("Web Design")}
-          >
-            Web Design
-          </Tab>
-          <Tab
-            $active={activeTab === "Digital Marketing"}
-            onClick={() => setActiveTab("Digital Marketing")}
-          >
-            Digital Marketing
-          </Tab>
+          {categories.map((category) => (
+            <Tab
+              key={category}
+              $active={activeTab === category}
+              onClick={() => setActiveTab(category)}
+            >
+              {category}
+            </Tab>
+          ))}
         </TabNavigation>
 
         <ProjectGrid>
@@ -311,8 +342,22 @@ export const Projects = () => {
         <NavigationControls>
           <CallToAction href="/work">See all work</CallToAction>
           <ArrowControls>
-            <NavButton aria-label="Previous projects">←</NavButton>
-            <NavButton aria-label="Next projects">→</NavButton>
+            <NavButton
+              onClick={handlePrevTab}
+              $active={canGoPrev}
+              disabled={!canGoPrev}
+              aria-label="Previous category"
+            >
+              &#10094;
+            </NavButton>
+            <NavButton
+              onClick={handleNextTab}
+              $active={canGoNext}
+              disabled={!canGoNext}
+              aria-label="Next category"
+            >
+              &#10095;
+            </NavButton>
           </ArrowControls>
         </NavigationControls>
       </PageWidth>

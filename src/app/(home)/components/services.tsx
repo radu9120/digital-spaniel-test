@@ -14,6 +14,10 @@ import {
 const ServicesSection = styled.section`
   background-color: var(--light-gray);
   padding: 80px 0;
+
+  @media (max-width: 767px) {
+    padding: 60px 0;
+  }
 `;
 
 const ServicesLayout = styled.div`
@@ -32,6 +36,10 @@ const HeadingContainer = styled.div`
   @media (min-width: 768px) {
     width: 35%;
   }
+
+  @media (max-width: 767px) {
+    margin-bottom: 40px;
+  }
 `;
 
 const StyledBusinessHeadline = styled(BusinessHeadline)`
@@ -49,6 +57,10 @@ const ServicesContainer = styled.div`
     width: 50%;
     margin-top: 0;
   }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+  }
 `;
 
 const ServicesRow = styled.div`
@@ -63,16 +75,30 @@ const ServicesRow = styled.div`
   @media (min-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }
+
+  /* Always keep the first row as two columns even on mobile */
+  &:first-child {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 const ServiceCategory = styled.div`
   padding: 10px 0;
+
+  @media (max-width: 767px) {
+    padding: 0 0 30px;
+  }
 `;
 
 const CategoryTitle = styled(H3)`
   font-size: 1.25rem;
   margin-bottom: 30px;
   text-transform: uppercase;
+
+  @media (max-width: 767px) {
+    margin-bottom: 20px;
+    font-size: 1rem;
+  }
 `;
 
 const ServicesList = styled.ul`
@@ -82,6 +108,10 @@ const ServicesList = styled.ul`
 
 const ServiceItem = styled.li`
   margin-bottom: 20px;
+
+  @media (max-width: 767px) {
+    margin-bottom: 15px;
+  }
 `;
 
 const ServiceLink = styled.a`
@@ -125,7 +155,12 @@ const ServiceLink = styled.a`
     transform: translateX(0);
     background-color: var(--medium-blue-gray);
   }
+
+  @media (max-width: 767px) {
+    font-size: 1rem;
+  }
 `;
+
 export const Services = () => {
   return (
     <ServicesSection>
