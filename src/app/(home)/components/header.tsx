@@ -6,7 +6,6 @@ import { PageWidth } from "@/components/page-width";
 import Link from "next/link";
 import { useScrollListener } from "@/hooks/use-scroll-listener";
 
-// Style for the header container with white background when scrolled
 const HeaderContainer = styled.header<{ $visible: boolean; $atTop: boolean }>`
   position: fixed;
   top: 0;
@@ -18,23 +17,22 @@ const HeaderContainer = styled.header<{ $visible: boolean; $atTop: boolean }>`
     props.$atTop ? "none" : "0 2px 10px rgba(0, 0, 0, 0.1)"};
   transition: transform 0.3s ease, background-color 0.3s ease,
     box-shadow 0.3s ease;
-  transform: translateY(${(props) => (props.$visible ? "0" : "-100%")});
+  transform: translateY(0);
   z-index: 100;
   padding: 10px 0;
 
   @media (min-width: 768px) {
     padding: ${(props) => (props.$atTop ? "20px 0" : "0")};
+    transform: translateY(${(props) => (props.$visible ? "0" : "-100%")});
   }
 `;
 
-// Navigation bar content remains unchanged
 const NavContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-// Logo styling with responsive size
 const Logo = styled.img`
   height: 45px;
   width: auto;
@@ -45,7 +43,6 @@ const Logo = styled.img`
   }
 `;
 
-// Desktop navigation
 const DesktopNav = styled.nav`
   display: none;
 
@@ -56,12 +53,10 @@ const DesktopNav = styled.nav`
   }
 `;
 
-// NavLink with color that changes based on scroll position
 const StyledNavLink = styled(NavLink)<{ $atTop: boolean }>`
   color: ${(props) => (props.$atTop ? "#ffffff" : "var(--dark-blue)")};
 `;
 
-// Active link style
 const ActiveNavItem = styled(StyledNavLink)`
   position: relative;
 
@@ -77,7 +72,6 @@ const ActiveNavItem = styled(StyledNavLink)`
   }
 `;
 
-// Mobile menu button with color that changes based on scroll position
 const MobileMenuButton = styled.button<{ $atTop: boolean }>`
   display: block;
   background: none;
@@ -107,7 +101,7 @@ const HamburgerIcon = styled.div<{ $isOpen: boolean; $atTop: boolean }>`
     width: 24px;
     height: 3px;
     background-color: ${(props) =>
-      props.$atTop ? "#fff" : "var(--dark-blue)"};
+      props.$isOpen ? "#fff" : props.$atTop ? "#fff" : "var(--dark-blue)"};
     transition: all 0.3s ease;
   }
 
@@ -122,7 +116,6 @@ const HamburgerIcon = styled.div<{ $isOpen: boolean; $atTop: boolean }>`
   }
 `;
 
-// Mobile slide-in menu
 const MobileMenu = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
